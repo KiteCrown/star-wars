@@ -23,8 +23,12 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     music.play(music.createSoundEffect(WaveShape.Square, 1600, 1, 255, 0, 300, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.InBackground)
 })
 statusbars.onZero(StatusBarKind.Health, function (status) {
-    game.setGameOverMessage(false, "you killed " + info.score() + " jets")
-    game.gameOver(false)
+    game.setGameOverMessage(true, "you killed " + info.score() + " jets")
+    game.setGameOverEffect(true, effects.slash)
+    game.setGameOverPlayable(true, music.melodyPlayable(music.wawawawaa), false)
+    game.setGameOverScoringType(game.ScoringType.HighScore)
+    game.setGameOverMessage(true, "GAME OVER!")
+    game.gameOver(true)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.ejigossa, function (sprite, otherSprite) {
     statusbar.value += -20
@@ -219,7 +223,7 @@ game.onUpdateInterval(2000, function () {
         projectile2.setKind(SpriteKind.ejigossa)
     }
 })
-game.onUpdateInterval(1000, function () {
+game.onUpdateInterval(500, function () {
     mySprite2 = sprites.create(img`
         ........................
         ........................
