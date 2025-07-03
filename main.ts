@@ -23,7 +23,6 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     music.play(music.createSoundEffect(WaveShape.Square, 1600, 1, 255, 0, 300, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.InBackground)
 })
 statusbars.onZero(StatusBarKind.Health, function (status) {
-    game.setGameOverMessage(true, "you killed " + info.score() + " jets")
     game.setGameOverEffect(true, effects.slash)
     game.setGameOverPlayable(true, music.melodyPlayable(music.wawawawaa), false)
     game.setGameOverScoringType(game.ScoringType.HighScore)
