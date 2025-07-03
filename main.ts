@@ -223,7 +223,7 @@ game.onUpdateInterval(2000, function () {
         projectile2.setKind(SpriteKind.ejigossa)
     }
 })
-game.onUpdateInterval(500, function () {
+game.onUpdateInterval(200, function () {
     mySprite2 = sprites.create(img`
         ........................
         ........................
