@@ -37,7 +37,6 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.ejigossa, function (sprite, othe
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     otherSprite.ay = 200
-    otherSprite.vx = -50
     info.changeScoreBy(1)
     sprites.destroy(otherSprite, effects.fire, 2000)
     music.play(music.melodyPlayable(music.bigCrash), music.PlaybackMode.InBackground)
