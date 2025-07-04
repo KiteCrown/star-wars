@@ -1,26 +1,91 @@
 namespace SpriteKind {
     export const ejigossa = SpriteKind.create()
+    export const suppro = SpriteKind.create()
 }
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (statusbar2.value == 100) {
+        charging = 1
+        music.play(music.createSoundEffect(WaveShape.Square, 1, 5000, 255, 0, 500, SoundExpressionEffect.None, InterpolationCurve.Linear), music.PlaybackMode.InBackground)
+        animation.runMovementAnimation(
+        mySprite,
+        animation.animationPresets(animation.shake),
+        500,
+        false
+        )
+        statusbar2.value = 0
+        timer.after(600, function () {
+            charging = 0
+            super_pro = sprites.createProjectileFromSprite(img`
+                ................................
+                ................................
+                ................................
+                ................................
+                ................................
+                .....2233332.......2233332......
+                .222331111132....2231111132.....
+                .111111111112....1111111112.....
+                .222331111132....2231111132.....
+                .....2223332.......2223332......
+                ................................
+                ................................
+                ................................
+                .............2233332............
+                .........222331111132...........
+                .........111111111112...........
+                .........222331111132...........
+                .............2223332............
+                ................................
+                ................................
+                ................................
+                ................................
+                .....2223332.......2233332......
+                .222331111132....2231111132.....
+                .111111111112....1111111112.....
+                .222331111132....2231111132.....
+                .....2233332.......2223332......
+                ................................
+                ................................
+                ................................
+                ................................
+                ................................
+                `, mySprite, 200, 0)
+            super_pro.scale += 3
+            super_pro.setKind(SpriteKind.suppro)
+            scene.cameraShake(8, 500)
+            music.play(music.createSoundEffect(WaveShape.Noise, 5000, 1, 255, 0, 700, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.InBackground)
+        })
+    }
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    projectile = sprites.createProjectileFromSprite(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . 2 2 3 3 3 3 2 . . . . 
-        . 2 2 2 3 3 1 1 1 1 1 3 2 . . . 
-        . 1 1 1 1 1 1 1 1 1 1 1 2 . . . 
-        . 2 2 2 3 3 1 1 1 1 1 3 2 . . . 
-        . . . . . 2 2 2 3 3 3 2 . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, mySprite, 200, 0)
-    music.play(music.createSoundEffect(WaveShape.Square, 1600, 1, 255, 0, 300, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.InBackground)
+    if (charging == 0) {
+        projectile = sprites.createProjectileFromSprite(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . 2 2 3 3 3 3 2 . . . . 
+            . 2 2 2 3 3 1 1 1 1 1 3 2 . . . 
+            . 1 1 1 1 1 1 1 1 1 1 1 2 . . . 
+            . 2 2 2 3 3 1 1 1 1 1 3 2 . . . 
+            . . . . . 2 2 2 3 3 3 2 . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, mySprite, 200, 0)
+        music.play(music.createSoundEffect(WaveShape.Square, 1600, 1, 255, 0, 300, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.InBackground)
+    } else {
+    	
+    }
+})
+sprites.onOverlap(SpriteKind.suppro, SpriteKind.Enemy, function (sprite, otherSprite) {
+    otherSprite.ay = 200
+    info.changeScoreBy(1)
+    sprites.destroy(otherSprite, effects.fire, 2000)
+    music.play(music.melodyPlayable(music.bigCrash), music.PlaybackMode.InBackground)
 })
 statusbars.onZero(StatusBarKind.Health, function (status) {
     game.setGameOverEffect(true, effects.slash)
@@ -29,13 +94,19 @@ statusbars.onZero(StatusBarKind.Health, function (status) {
     game.setGameOverMessage(true, "GAME OVER!")
     game.gameOver(true)
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+    statusbar.value += 20
+    music.play(music.createSoundEffect(WaveShape.Square, 1, 5000, 255, 0, 500, SoundExpressionEffect.None, InterpolationCurve.Linear), music.PlaybackMode.UntilDone)
+})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.ejigossa, function (sprite, otherSprite) {
-    statusbar.value += -20
+    statusbar.value += -10
     scene.cameraShake(4, 500)
     music.play(music.createSoundEffect(WaveShape.Noise, 3300, 1400, 255, 0, 150, SoundExpressionEffect.Warble, InterpolationCurve.Linear), music.PlaybackMode.InBackground)
     sprites.destroy(otherSprite, effects.fire, 500)
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    statusbar2.value += 20
     otherSprite.ay = 200
     info.changeScoreBy(1)
     sprites.destroy(otherSprite, effects.fire, 2000)
@@ -43,16 +114,21 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
     sprites.destroy(sprite)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
-    statusbar.value += -20
+    statusbar.value += -10
     scene.cameraShake(4, 500)
     music.play(music.createSoundEffect(WaveShape.Noise, 3300, 1400, 255, 0, 150, SoundExpressionEffect.Warble, InterpolationCurve.Linear), music.PlaybackMode.InBackground)
     sprites.destroy(otherSprite, effects.fire, 500)
 })
 let mySprite2: Sprite = null
 let projectile2: Sprite = null
+let mySprite3: Sprite = null
 let projectile: Sprite = null
+let super_pro: Sprite = null
 let mySprite: Sprite = null
 let statusbar: StatusBarSprite = null
+let statusbar2: StatusBarSprite = null
+let charging = 0
+charging = 0
 game.splash("press A to start")
 scene.setBackgroundImage(img`
     8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
@@ -177,6 +253,10 @@ scene.setBackgroundImage(img`
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
     `)
 scroller.scrollBackgroundWithSpeed(-50, 0)
+statusbar2 = statusbars.create(20, 4, StatusBarKind.Energy)
+statusbar2.value = 0
+statusbar2.setBarBorder(1, 5)
+statusbar2.setColor(2, 15)
 statusbar = statusbars.create(4, 50, StatusBarKind.Health)
 statusbar.setColor(5, 15, 2)
 statusbar.setBarBorder(1, 9)
@@ -201,6 +281,36 @@ mySprite = sprites.create(img`
     `, SpriteKind.Player)
 controller.moveSprite(mySprite)
 mySprite.setStayInScreen(true)
+game.onUpdate(function () {
+	
+})
+game.onUpdate(function () {
+    statusbar2.attachToSprite(mySprite)
+})
+game.onUpdateInterval(5000, function () {
+    if (Math.percentChance(50)) {
+        mySprite3 = sprites.create(img`
+            . . 2 2 b b b b b . . . . . . . 
+            . 2 b 4 4 4 4 4 4 b . . . . . . 
+            2 2 4 4 4 4 d d 4 4 b . . . . . 
+            2 b 4 4 4 4 4 4 d 4 b . . . . . 
+            2 b 4 4 4 4 4 4 4 d 4 b . . . . 
+            2 b 4 4 4 4 4 4 4 4 4 b . . . . 
+            2 b 4 4 4 4 4 4 4 4 4 e . . . . 
+            2 2 b 4 4 4 4 4 4 4 b e . . . . 
+            . 2 b b b 4 4 4 b b b e . . . . 
+            . . e b b b b b b b e e . . . . 
+            . . . e e b 4 4 b e e e b . . . 
+            . . . . . e e e e e e b d b b . 
+            . . . . . . . . . . . b 1 1 1 b 
+            . . . . . . . . . . . c 1 d d b 
+            . . . . . . . . . . . c 1 b c . 
+            . . . . . . . . . . . . c c . . 
+            `, SpriteKind.Food)
+        mySprite3.setPosition(160, randint(2, 116))
+        mySprite3.setVelocity(-50, 0)
+    }
+})
 game.onUpdateInterval(2000, function () {
     for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
         projectile2 = sprites.createProjectileFromSprite(img`
